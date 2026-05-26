@@ -1,0 +1,69 @@
+{
+	"name": "@c9up/pulsar",
+	"version": "0.1.0",
+	"description": "Pulsar — Rust-powered event bus for the Ream framework (standalone)",
+	"license": "MIT",
+	"type": "module",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"files": [
+		"src",
+		"index.js",
+		"index.d.ts",
+		"index.*.node",
+		"README.md",
+		"LICENSE"
+	],
+	"exports": {
+		".": {
+			"import": "./index.js",
+			"types": "./index.d.ts"
+		},
+		"./events": {
+			"import": "./src/Emitter.ts",
+			"types": "./src/Emitter.ts"
+		},
+		"./provider": {
+			"import": "./src/PulsarProvider.ts",
+			"types": "./src/PulsarProvider.ts"
+		},
+		"./services/main": {
+			"import": "./src/services/main.ts",
+			"types": "./src/services/main.ts"
+		},
+		"./helix": {
+			"import": "./src/helix/helpers.ts",
+			"types": "./src/helix/helpers.ts"
+		},
+		"./testing": {
+			"import": "./src/testing/FakeBus.ts",
+			"types": "./src/testing/FakeBus.ts"
+		},
+		"./config": {
+			"import": "./src/config.ts",
+			"types": "./src/config.ts"
+		},
+		"./configure": {
+			"import": "./src/configure.ts",
+			"types": "./src/configure.ts"
+		}
+	},
+	"peerDependencies": {
+		"@c9up/ream": "workspace:*"
+	},
+	"scripts": {
+		"build:rust": "cargo build --release -p pulsar-bus-napi",
+		"build:napi": "pnpm build:rust && node scripts/copy-napi.mjs",
+		"build": "pnpm build:napi",
+		"test": "vitest run",
+		"test:rust": "cargo test -p pulsar-bus",
+		"lint": "biome check src/",
+		"test:coverage": "vitest run --coverage"
+	},
+	"devDependencies": {
+		"vitest": "^4.1.2"
+	},
+	"engines": {
+		"node": ">=22.0.0"
+	}
+}
