@@ -7,12 +7,13 @@
 	"main": "index.js",
 	"types": "index.d.ts",
 	"files": [
-		"src",
-		"index.js",
-		"index.d.ts",
-		"index.*.node",
+		"LICENSE",
 		"README.md",
-		"LICENSE"
+		"dist",
+		"index.*.node",
+		"index.d.ts",
+		"index.js",
+		"src"
 	],
 	"exports": {
 		".": {
@@ -20,32 +21,39 @@
 			"types": "./index.d.ts"
 		},
 		"./events": {
-			"import": "./src/Emitter.ts",
-			"types": "./src/Emitter.ts"
+			"types": "./dist/Emitter.d.ts",
+			"development": "./src/Emitter.ts",
+			"import": "./dist/Emitter.js"
 		},
 		"./provider": {
-			"import": "./src/PulsarProvider.ts",
-			"types": "./src/PulsarProvider.ts"
+			"types": "./dist/PulsarProvider.d.ts",
+			"development": "./src/PulsarProvider.ts",
+			"import": "./dist/PulsarProvider.js"
 		},
 		"./services/main": {
-			"import": "./src/services/main.ts",
-			"types": "./src/services/main.ts"
+			"types": "./dist/services/main.d.ts",
+			"development": "./src/services/main.ts",
+			"import": "./dist/services/main.js"
 		},
 		"./helix": {
-			"import": "./src/helix/helpers.ts",
-			"types": "./src/helix/helpers.ts"
+			"types": "./dist/helix/helpers.d.ts",
+			"development": "./src/helix/helpers.ts",
+			"import": "./dist/helix/helpers.js"
 		},
 		"./testing": {
-			"import": "./src/testing/FakeBus.ts",
-			"types": "./src/testing/FakeBus.ts"
+			"types": "./dist/testing/FakeBus.d.ts",
+			"development": "./src/testing/FakeBus.ts",
+			"import": "./dist/testing/FakeBus.js"
 		},
 		"./config": {
-			"import": "./src/config.ts",
-			"types": "./src/config.ts"
+			"types": "./dist/config.d.ts",
+			"development": "./src/config.ts",
+			"import": "./dist/config.js"
 		},
 		"./configure": {
-			"import": "./src/configure.ts",
-			"types": "./src/configure.ts"
+			"types": "./dist/configure.d.ts",
+			"development": "./src/configure.ts",
+			"import": "./dist/configure.js"
 		}
 	},
 	"peerDependencies": {
@@ -54,7 +62,7 @@
 	"scripts": {
 		"build:rust": "cargo build --release -p pulsar-bus-napi",
 		"build:napi": "pnpm build:rust && node scripts/copy-napi.mjs",
-		"build": "pnpm build:napi",
+		"build": "tsc -p tsconfig.build.json",
 		"test": "vitest run",
 		"test:rust": "cargo test -p pulsar-bus",
 		"typecheck": "tsc --noEmit",
