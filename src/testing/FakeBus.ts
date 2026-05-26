@@ -296,7 +296,7 @@ function parseEmitData(data: string): ParsedHeader {
 }
 
 function readStringField(source: object, key: string): string | undefined {
-	const record: Record<string, unknown> = source;
+	const record = source as Record<string, unknown>;
 	const value = record[key];
 	return typeof value === "string" ? value : undefined;
 }

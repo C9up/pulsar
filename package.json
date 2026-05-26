@@ -57,10 +57,12 @@
 		"build": "pnpm build:napi",
 		"test": "vitest run",
 		"test:rust": "cargo test -p pulsar-bus",
+		"typecheck": "tsc --noEmit",
 		"lint": "biome check src/",
 		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
+		"typescript": "^6.0.2",
 		"vitest": "^4.1.2"
 	},
 	"engines": {
