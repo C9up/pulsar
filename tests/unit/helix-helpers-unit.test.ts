@@ -8,8 +8,8 @@ import { describe, expect, it } from "vitest";
 import {
 	assertEmitted,
 	assertNotEmitted,
-	collect,
 	type CollectedEvent,
+	collect,
 	fake,
 	waitForChain,
 	waitForEvent,
@@ -84,9 +84,13 @@ describe("pulsar > helix > assertEmitted", () => {
 	});
 
 	it("passes when payload partially matches a string-encoded data field", () => {
-		assertEmitted([ev("order.created", '{"id":"1","amount":50}')], "order.created", {
-			id: "1",
-		});
+		assertEmitted(
+			[ev("order.created", '{"id":"1","amount":50}')],
+			"order.created",
+			{
+				id: "1",
+			},
+		);
 	});
 
 	it("passes when payload partially matches an object data field", () => {
@@ -134,7 +138,10 @@ describe("pulsar > helix > waitForEvent", () => {
 
 	it("resolves once the event is appended asynchronously", async () => {
 		const events: CollectedEvent[] = [];
-		const promise = waitForEvent(events, "later", { interval: 5, timeout: 200 });
+		const promise = waitForEvent(events, "later", {
+			interval: 5,
+			timeout: 200,
+		});
 		setTimeout(() => events.push({ name: "later", data: undefined }), 10);
 		await expect(promise).resolves.toMatchObject({ name: "later" });
 	});

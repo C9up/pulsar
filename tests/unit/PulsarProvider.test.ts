@@ -13,9 +13,9 @@
  * `new Listener()` fallback in Emitter when no resolver is available.
  */
 import { describe, expect, it } from "vitest";
+import { PulsarBus } from "../../index.js";
 import { Emitter } from "../../src/Emitter.js";
 import PulsarProvider from "../../src/PulsarProvider.js";
-import { PulsarBus } from "../../index.js";
 
 class TaskAssigned {
 	constructor(public taskId: string) {}
