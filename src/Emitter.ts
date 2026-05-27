@@ -124,24 +124,34 @@ export class Emitter {
 	async dispatchEvent<T extends object>(event: T): Promise<void> {
 		const EventClass = event.constructor as EventConstructor<T>;
 		const listeners = this.classListeners.get(EventClass) ?? [];
+		const name =
+			(EventClass as { eventName?: string }).eventName ??
+			classToEventName(EventClass);
 
+		// Per-listener error isolation — mirrors the string `emit()` contract.
+		// A side-effect listener that throws (SMTP down, etc.) MUST NOT abort
+		// the sibling listeners NOR suppress the cross-service `bus.emit` below:
+		// the domain event already happened, so distributed subscribers must
+		// still receive it. Failures surface on the `emitter:error` channel.
 		for (const listener of listeners) {
-			if (isListenerClass(listener)) {
-				// Listener class — resolve via container for @inject() support
-				const instance = this.resolver
-					? this.resolver.make(listener as ListenerConstructor<T>)
-					: new (listener as ListenerConstructor<T>)();
-				await instance.handle(event);
-			} else {
-				await (listener as ListenerFn<T>)(event);
+			try {
+				if (isListenerClass(listener)) {
+					// Listener class — resolve via container for @inject() support
+					const instance = this.resolver
+						? this.resolver.make(listener as ListenerConstructor<T>)
+						: new (listener as ListenerConstructor<T>)();
+					await instance.handle(event);
+				} else {
+					await (listener as ListenerFn<T>)(event);
+				}
+			} catch (err) {
+				this.emitError(name, err);
 			}
 		}
 
 		// Also push through PulsarBus — same correlation-envelope wrapping as
 		// the string-event path so distributed tracing covers class events too.
-		const name =
-			(EventClass as { eventName?: string }).eventName ??
-			classToEventName(EventClass);
+		// Reached unconditionally: a listener failure above no longer skips it.
 		await this.bus.emit(name, JSON.stringify(this.#wrapForBus(event)));
 	}
 

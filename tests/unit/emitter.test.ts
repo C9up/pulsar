@@ -346,20 +346,29 @@ describe("pulsar > BaseEvent", () => {
 		BaseEvent.resetEmitter();
 	});
 
-	it("emit() logs to stderr when the underlying dispatch throws", async () => {
+	it("isolates a throwing class listener: siblings still run and the bus still emits", async () => {
 		const bus = new FakeBus();
 		const emitter = new Emitter(bus);
-		// Register a listener that throws → dispatchEvent will reject.
+		const errors: unknown[] = [];
+		const ran: string[] = [];
+		emitter.on("emitter:error", (e) => errors.push(e));
+		// First listener throws — must NOT abort the second listener nor the
+		// cross-service bus propagation (the domain event already happened).
 		emitter.on(Sample, () => {
+			ran.push("first");
 			throw new Error("listener crash");
 		});
+		emitter.on(Sample, () => {
+			ran.push("second");
+		});
 		BaseEvent.useEmitter(emitter);
-		const spy = vi.spyOn(process.stderr, "write").mockReturnValue(true);
 		await new Sample(1).emit();
-		expect(spy).toHaveBeenCalledWith(
-			expect.stringContaining("dispatch error for Sample"),
-		);
-		spy.mockRestore();
+
+		expect(ran).toEqual(["first", "second"]);
+		expect(errors).toHaveLength(1);
+		expect((errors[0] as { event: string }).event).toBe("sample");
+		// Distributed subscribers still receive the event despite the failure.
+		expect(bus.getEmitted().map((e) => e.name)).toContain("sample");
 		BaseEvent.resetEmitter();
 	});
 });
