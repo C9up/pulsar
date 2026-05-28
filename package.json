@@ -1,0 +1,110 @@
+{
+	"name": "@c9up/pulsar",
+	"version": "0.1.0",
+	"description": "Pulsar — Rust-powered event bus for the Ream framework (standalone)",
+	"license": "MIT",
+	"type": "module",
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"files": [
+		"LICENSE",
+		"README.md",
+		"dist",
+		"index.*.node",
+		"index.d.ts",
+		"index.js",
+		"src"
+	],
+	"exports": {
+		".": {
+			"import": "./index.js",
+			"types": "./index.d.ts"
+		},
+		"./events": {
+			"types": "./src/Emitter.ts",
+			"import": "./src/Emitter.ts"
+		},
+		"./provider": {
+			"types": "./src/PulsarProvider.ts",
+			"import": "./src/PulsarProvider.ts"
+		},
+		"./services/main": {
+			"types": "./src/services/main.ts",
+			"import": "./src/services/main.ts"
+		},
+		"./helix": {
+			"types": "./src/helix/helpers.ts",
+			"import": "./src/helix/helpers.ts"
+		},
+		"./testing": {
+			"types": "./src/testing/FakeBus.ts",
+			"import": "./src/testing/FakeBus.ts"
+		},
+		"./config": {
+			"types": "./src/config.ts",
+			"import": "./src/config.ts"
+		},
+		"./configure": {
+			"types": "./src/configure.ts",
+			"import": "./src/configure.ts"
+		}
+	},
+	"peerDependencies": {
+		"@c9up/ream": "workspace:*"
+	},
+	"scripts": {
+		"build:rust": "cargo build --release -p pulsar-bus-napi",
+		"build:napi": "pnpm build:rust && node scripts/copy-napi.mjs",
+		"build": "tsc -p tsconfig.build.json",
+		"test": "vitest run",
+		"test:rust": "cargo test -p pulsar-bus",
+		"typecheck": "tsc --noEmit",
+		"lint": "biome check src/",
+		"test:coverage": "vitest run --coverage"
+	},
+	"devDependencies": {
+		"typescript": "^6.0.2",
+		"vitest": "^4.1.2"
+	},
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"publishConfig": {
+		"main": "./dist/index.js",
+		"types": "./dist/index.d.ts",
+		"exports": {
+			".": {
+				"import": "./index.js",
+				"types": "./index.d.ts"
+			},
+			"./events": {
+				"types": "./dist/Emitter.d.ts",
+				"import": "./dist/Emitter.js"
+			},
+			"./provider": {
+				"types": "./dist/PulsarProvider.d.ts",
+				"import": "./dist/PulsarProvider.js"
+			},
+			"./services/main": {
+				"types": "./dist/services/main.d.ts",
+				"import": "./dist/services/main.js"
+			},
+			"./helix": {
+				"types": "./dist/helix/helpers.d.ts",
+				"import": "./dist/helix/helpers.js"
+			},
+			"./testing": {
+				"types": "./dist/testing/FakeBus.d.ts",
+				"import": "./dist/testing/FakeBus.js"
+			},
+			"./config": {
+				"types": "./dist/config.d.ts",
+				"import": "./dist/config.js"
+			},
+			"./configure": {
+				"types": "./dist/configure.d.ts",
+				"import": "./dist/configure.js"
+			}
+		}
+	}
+}

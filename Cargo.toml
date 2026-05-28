@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/pulsar-bus",
+  "crates/pulsar-bus-napi",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/C9up/pulsar"
