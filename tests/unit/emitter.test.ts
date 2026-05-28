@@ -94,6 +94,7 @@ describe("pulsar > Emitter > class-based events", () => {
 	});
 
 	it("honours an explicit static eventName on the class", async () => {
+		// biome-ignore lint/complexity/noStaticOnlyClass: an event fixture must be a class — the static eventName override is the behaviour under test
 		class CustomNamed {
 			static eventName = "custom:explicit";
 		}
